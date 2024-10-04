@@ -104,8 +104,11 @@ def process_text(text, lang='en'):
 
     print("Paraphrasing large text...")
     paraphrased_text = paraphrase_large_text(text)
-    
-    return paraphrased_text
+
+    # Remove any occurrence of "paraphrased_output" from the paraphrased text
+    clean_text = paraphrased_text.replace("paraphrasedoutput:", "")
+
+    return clean_text
 
 # Example usage
 text, img_url, title = parse()  # Get text from your scraper
@@ -148,17 +151,17 @@ def create_new_article():
             "trending": True,
             "link-stat": "https://jimag.webflow.io/?tab=Culture",
             "culture": True,
-            "date-publish": (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d"),
+            "date-publish": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
             "editor-s-picks": False,
-            "fashion": True,
-            "luxury": True,
+            "fashion": False,
+            "luxury": False,
             "stat-select": "Fashion",
             "post-body": paraphrased_output,
             "main-image": {
                 "url": img_url,
-                "alt": "Fashion Technology Illustration"
+                "alt": "Image Illustration"
             },
-            "tags": ["6553e71600ad68934cb80ccc","6553e71600ad68934cb80cd6","6553e71600ad68934cb80cce","6553e71600ad68934cb80cef"] 
+            "tags": ["6553e71600ad68934cb80cd6"] 
         },
         "isDraft": False
     }
@@ -185,4 +188,5 @@ def add_article_to_webflow(article):
 print('Uploading to Webflow ...')
 new_article = create_new_article()
 add_article_to_webflow(new_article)
+
 
