@@ -176,15 +176,15 @@ def create_new_article():
             "culture": True,
             "date-publish": (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d"),
             "editor-s-picks": False,
-            "fashion": True,
-            "luxury": True,
+            "fashion": False,
+            "luxury": False,
             "stat-select": "Fashion",
             "post-body": modified_text,
             "main-image": {
                 "url": img_url ,
-                "alt": "Fashion Technology Illustration"
+                "alt": "Image Illustration"
             },
-            "tags": ["6553e71600ad68934cb80ccc","6553e71600ad68934cb80cd6","6553e71600ad68934cb80cce","6553e71600ad68934cb80cef"] 
+            "tags": ["6553e71600ad68934cb80cd6"] 
         },
         "isDraft": False
     }
