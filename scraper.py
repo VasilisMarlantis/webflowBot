@@ -39,7 +39,7 @@ user_agents = [
 
 def parse():
     # Define the URL
-    url = "https://daoinsights.com/news/painbags-miniso-launches-ita-everything-acgn-campaign/"
+    url = "https://daoinsights.com/news/michael-kors-bistro-brand-launches-chengdu-pop-up-for-jordi-bag/"
     # Set custom headers
     headers = {
         "User-Agent": random.choice(user_agents),  # Rotate user-agent
