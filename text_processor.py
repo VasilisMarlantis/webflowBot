@@ -3,7 +3,6 @@ import time
 from langdetect import detect
 from scraper import parse
 import textwrap
-import requests
 import json
 from datetime import datetime, timedelta
 import os
@@ -11,8 +10,6 @@ import re
 from dotenv import load_dotenv
 
 load_dotenv()
-
-
 
 # Your Hugging Face API key
 HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
@@ -86,11 +83,12 @@ def paraphrase_large_text(text, chunk_size=250):
         print(f"Paraphrasing chunk: {chunk[:50]}...")  # Show the first 50 characters of each chunk
         paraphrased_chunk = paraphrase_text(chunk)
         if paraphrased_chunk:
+            # Only append the paraphrased chunk directly
             paraphrased_chunks.append(paraphrased_chunk)
         else:
-            paraphrased_chunks.append(chunk)  # In case paraphrasing fails, return original chunk
+            paraphrased_chunks.append(chunk)  # In case paraphrasing fails, return the original chunk
 
-    # Join the paraphrased chunks back together
+    # Join the paraphrased chunks back together without any extra words or prefixes
     return " ".join(paraphrased_chunks)
 
 def process_text(text, lang='en'):
@@ -118,7 +116,6 @@ paraphrased_title = paraphrase_text(title)
 print(f"Paraphrased title: {paraphrased_title}")
 paraphrased_output = process_text(text, detected_language)
 
-print("---------------Original Text:", text)
 print("===============Paraphrased Text:", paraphrased_output)
 
 
@@ -128,32 +125,8 @@ SITE_ID = os.getenv("SITE_ID")
 COLLECTION_ID = os.getenv("COLLECTION_ID")
 WEBFLOW_API_URL = f"https://api.webflow.com/v2/collections/{COLLECTION_ID}/items"
 
-#adding new line to text full stop 
-def add_new_lines(text):
-    # Split the text into sentences based on the full stop
-    sentences = text.split('.')
-    
-    # Create a new list to hold the modified sentences
-    modified_text = []
-    
-    # Iterate over the sentences and group them
-    for i in range(len(sentences)):
-        # Strip leading/trailing whitespace and check for non-empty sentences
-        sentence = sentences[i].strip()
-        if sentence:
-            modified_text.append(sentence)
-        
-        # Add a new line after every two sentences
-        if (i + 1) % 2 == 0 and i + 1 != len(sentences):
-            modified_text.append('\n')  # Append a new line
 
-    # Join the modified sentences into a single string
-    return '. '.join(modified_text).strip()
-
-modified_text = add_new_lines(paraphrased_output)
-
-
-# parsing slug from title
+# Parsing slug from title
 def sanitize_slug(slug):
     # Replace invalid characters with hyphens
     sanitized_slug = re.sub(r'[^a-zA-Z0-9-_]', '-', slug).strip('-')
@@ -165,6 +138,7 @@ def sanitize_slug(slug):
     return sanitized_slug
 
 valid_slug = sanitize_slug(title[0])
+
 def create_new_article():
     # Create dummy data for the new article
     new_article = {
@@ -176,15 +150,15 @@ def create_new_article():
             "culture": True,
             "date-publish": (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d"),
             "editor-s-picks": False,
-            "fashion": False,
-            "luxury": False,
+            "fashion": True,
+            "luxury": True,
             "stat-select": "Fashion",
-            "post-body": modified_text,
+            "post-body": paraphrased_output,
             "main-image": {
-                "url": img_url ,
-                "alt": "Image Illustration"
+                "url": img_url,
+                "alt": "Fashion Technology Illustration"
             },
-            "tags": ["6553e71600ad68934cb80cd6"] 
+            "tags": ["6553e71600ad68934cb80ccc","6553e71600ad68934cb80cd6","6553e71600ad68934cb80cce","6553e71600ad68934cb80cef"] 
         },
         "isDraft": False
     }
@@ -208,6 +182,7 @@ def add_article_to_webflow(article):
         print(response.text)
 
 # Create and add the new article
-print(' Uploding to Webflow ...')
+print('Uploading to Webflow ...')
 new_article = create_new_article()
 add_article_to_webflow(new_article)
+
