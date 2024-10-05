@@ -37,60 +37,109 @@ user_agents = [
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15"
 ]
 
-def parse():
-    # Define the URL
-    url = "https://daoinsights.com/news/michael-kors-bistro-brand-launches-chengdu-pop-up-for-jordi-bag/"
-    # Set custom headers
+# File to store previously scraped URLs
+url_storage_file = 'scraped_urls.json'
+
+# Load previously scraped URLs
+def load_scraped_urls():
+    if os.path.exists(url_storage_file):
+        with open(url_storage_file, 'r') as f:
+            return json.load(f)
+    return []
+
+# Save scraped URLs to file
+def save_scraped_urls(scraped_urls):
+    with open(url_storage_file, 'w') as f:
+        json.dump(scraped_urls, f)
+
+# Scrape the homepage and get URLs
+def get_new_urls():
+    url = "https://daoinsights.com/"
     headers = {
-        "User-Agent": random.choice(user_agents),  # Rotate user-agent
+        "User-Agent": random.choice(user_agents),
         "Accept-Language": "en-US,en;q=0.9",
-        "Referer": "https://www.google.com/",  # Mimic referral from a trusted source
+        "Referer": "https://www.google.com/"
     }
     
-    # Delay before making a request to avoid bot detection
-    time.sleep(random.uniform(1, 5))  # Delay between 1 to 5 seconds
-    
-    # Send the request
     try:
         response = requests.get(url, headers=headers)
-        
-        # Print status code
-        print(f"Status Code: {response.status_code}")
-        
-        # Parse the response content
         tree = html.fromstring(response.content)
-        #get title
+        # Extract URLs of articles
+        links = tree.xpath('//a[@class="preview-image"]/@href')
+        return ["https://daoinsights.com" + link for link in links]
+    except requests.exceptions.RequestException as e:
+        print(f"Failed to get homepage: {e}")
+        return []
+
+# Scrape individual article for title, image, and text
+def scrape_article(url):
+    headers = {
+        "User-Agent": random.choice(user_agents),
+        "Accept-Language": "en-US,en;q=0.9",
+        "Referer": "https://www.google.com/"
+    }
+
+    time.sleep(random.uniform(1, 5))  # Delay before making request
+    
+    try:
+        response = requests.get(url, headers=headers)
+        print(f"Scraping {url}, Status Code: {response.status_code}")
+        
+        tree = html.fromstring(response.content)
+        
+        # Get title
         title = tree.xpath("//h1[@class='entry-title']/text()")
-        if(title):
-            print('title',title[0])
-        #get img url
+        title = title[0] if title else "No title found"
+        
+        # Get image URL
         img_url = tree.xpath("//div[@class='featured-media']/img/@src")
-        if(img_url):          
-            print('img_url',img_url[0])
-            img_url = img_url[0]
-        # Get all <p> tags
+        img_url = img_url[0] if img_url else "No image found"
+        
+        # Get paragraphs
         paragraphs = tree.xpath('//p/text()')
         
-        # Identify the target text
+        # Target text (stop extraction before this text)
         target_text = "© 2024 Dao Insights"
         
-        # Extract paragraphs until the target text is found
         extracted_paragraphs = []
         for p in paragraphs:
             if target_text in p:
                 break
             extracted_paragraphs.append(p.strip())
         
-        # Clean up the paragraphs and separate them with new lines
-        text = ''.join([p for p in extracted_paragraphs if p])
+        text = ''.join(extracted_paragraphs)
         
-        # Print extracted paragraph text
-        print(text[:100])
-    
+        return title, img_url, text[:100]  # Limit text for preview
     except requests.exceptions.RequestException as e:
-        print(f"Request failed: {e}")
-        
-    return text, img_url, title
+        print(f"Failed to scrape {url}: {e}")
+        return None, None, None
 
-# Call the function
+def parse():
+    # Load previously scraped URLs
+    scraped_urls = load_scraped_urls()
+    
+    # Get new URLs from the homepage
+    new_urls = get_new_urls()
+    
+    # Prepare a list to store new articles
+    new_articles = []
+    
+    # Compare and scrape new URLs
+    for url in new_urls:
+        if url not in scraped_urls:
+            title, img_url, text = scrape_article(url)
+            if title and img_url and text:
+                new_articles.append({
+                    "url": url,
+                    "title": title,
+                    "img_url": img_url,
+                    "text": text
+                })
+                scraped_urls.append(url)  # Add new URL to the list
+
+    # Save updated list of scraped URLs
+    save_scraped_urls(scraped_urls)
+    
+    # Return the new articles
+    return new_articles
 
