@@ -68,7 +68,7 @@ def get_new_urls():
         tree = html.fromstring(response.content)
         # Extract URLs of articles
         links = tree.xpath('//a[@class="preview-image"]/@href')
-        return ["https://daoinsights.com" + link for link in links]
+        return [link if link.startswith("http") else "https://daoinsights.com" + link for link in links]
     except requests.exceptions.RequestException as e:
         print(f"Failed to get homepage: {e}")
         return []
