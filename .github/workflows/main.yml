@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 6 * * *'  # Runs every day at 6 AM UTC
+    - cron: '30 6 * * *'  # Runs every day at 6:30 AM UTC
 
 jobs:
   run-text-processor:
@@ -34,3 +34,15 @@ jobs:
       # Step 4: Run text_processor.py
       - name: Run text_processor.py
         run: python text_processor.py
+
+      # Step 5: Commit and push updated scraped URLs
+      - name: Commit and push updated scraped URLs
+        run: |
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add scraped_urls.json
+          git commit -m "Update scraped URLs"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
