@@ -2,6 +2,8 @@ import requests
 import random
 import time
 from lxml import html
+import json
+import os
 
 # List of 30 User-Agents for rotation
 user_agents = [
