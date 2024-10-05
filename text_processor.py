@@ -4,7 +4,7 @@ from langdetect import detect
 from scraper import parse
 import textwrap
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 import os
 import re
 from dotenv import load_dotenv
@@ -37,14 +37,11 @@ def translate_to_english(text, source_lang):
         result = response.json()
         if 'translation_text' in result[0]:
             return result[0]['translation_text']
-        else:
-            return None
     else:
         print(f"Error during translation: {response.status_code}")
-        return None
+    return None
 
 def paraphrase_text(text, retries=3):
-    # Payload to be sent to the paraphrasing API
     payload = {
         "inputs": text,
         "parameters": {
@@ -59,10 +56,7 @@ def paraphrase_text(text, retries=3):
             if response.status_code == 200:
                 result = response.json()
                 if 'generated_text' in result[0]:
-                    paraphrased = result[0]['generated_text']
-                    return paraphrased.strip()
-                else:
-                    return "No 'generated_text' found in response."
+                    return result[0]['generated_text'].strip()
             else:
                 print(f"Error: {response.status_code}")
         except Exception as e:
@@ -74,7 +68,6 @@ def paraphrase_text(text, retries=3):
     return None
 
 def paraphrase_large_text(text, chunk_size=250):
-    # Split the text into chunks of size <= chunk_size characters
     chunks = textwrap.wrap(text, width=chunk_size)
     
     paraphrased_chunks = []
@@ -83,12 +76,10 @@ def paraphrase_large_text(text, chunk_size=250):
         print(f"Paraphrasing chunk: {chunk[:50]}...")  # Show the first 50 characters of each chunk
         paraphrased_chunk = paraphrase_text(chunk)
         if paraphrased_chunk:
-            # Only append the paraphrased chunk directly
             paraphrased_chunks.append(paraphrased_chunk)
         else:
-            paraphrased_chunks.append(chunk)  # In case paraphrasing fails, return the original chunk
+            paraphrased_chunks.append(chunk)
 
-    # Join the paraphrased chunks back together without any extra words or prefixes
     return " ".join(paraphrased_chunks)
 
 def process_text(text, lang='en'):
@@ -96,7 +87,6 @@ def process_text(text, lang='en'):
         print(f"Translating from {lang} to English...")
         translated_text = translate_to_english(text, lang)
         if translated_text:
-            print(f"Translated Text: {translated_text}")
             text = translated_text
         else:
             print("Translation failed.")
@@ -111,82 +101,87 @@ def process_text(text, lang='en'):
     return clean_text
 
 # Example usage
-text, img_url, title = parse()  # Get text from your scraper
+articles = parse()  # Get articles from your scraper
 
-detected_language = detect(text)
-print(f"Detected language: {detected_language}")
-paraphrased_title = paraphrase_text(title)
-print(f"Paraphrased title: {paraphrased_title}")
-paraphrased_output = process_text(text, detected_language)
+for article in articles:
+    # Ensure the article is structured correctly
+    if not isinstance(article, dict) or 'text' not in article or 'img_url' not in article or 'title' not in article:
+        print("Skipping article due to unexpected structure.")
+        continue  # Skip this iteration if the structure is incorrect
 
-print("===============Paraphrased Text:", paraphrased_output)
+    # Unpack the variables
+    text = article['text']
+    img_url = article['img_url']
+    title = article['title']
 
+    # Check if any value is None
+    if text is None or img_url is None or title is None:
+        print("Skipping article due to missing values.")
+        continue
 
-# Webflow API details
-WEBFLOW_API_KEY = os.getenv("WEBFLOW_API_KEY")
-SITE_ID = os.getenv("SITE_ID") 
-COLLECTION_ID = os.getenv("COLLECTION_ID")
-WEBFLOW_API_URL = f"https://api.webflow.com/v2/collections/{COLLECTION_ID}/items"
+    detected_language = detect(text)
+    print(f"Detected language: {detected_language}")
+    paraphrased_title = paraphrase_text(title)
+    print(f"Paraphrased title: {paraphrased_title}")
+    paraphrased_output = process_text(text, detected_language)
 
+    print("=============== Paraphrased Text:", paraphrased_output)
 
-# Parsing slug from title
-def sanitize_slug(slug):
-    # Replace invalid characters with hyphens
-    sanitized_slug = re.sub(r'[^a-zA-Z0-9-_]', '-', slug).strip('-')
-    
-    # Ensure the slug starts with a valid character (letter or number)
-    if not re.match(r'^[a-zA-Z0-9]', sanitized_slug):
-        sanitized_slug = 'a' + sanitized_slug  # Prefix with 'a' if invalid start
-    
-    return sanitized_slug
+    # Webflow API details
+    WEBFLOW_API_KEY = os.getenv("WEBFLOW_API_KEY")
+    SITE_ID = os.getenv("SITE_ID") 
+    COLLECTION_ID = os.getenv("COLLECTION_ID")
+    WEBFLOW_API_URL = f"https://api.webflow.com/v2/collections/{COLLECTION_ID}/items"
 
-valid_slug = sanitize_slug(title[0])
+    def sanitize_slug(slug):
+        sanitized_slug = re.sub(r'[^a-zA-Z0-9-_]', '-', slug).strip('-')
+        if not re.match(r'^[a-zA-Z0-9]', sanitized_slug):
+            sanitized_slug = 'a' + sanitized_slug
+        return sanitized_slug
 
-def create_new_article():
-    # Create dummy data for the new article
-    new_article = {
-        "fieldData": {
-            "name": title[0],
-            "slug": valid_slug,
-            "trending": True,
-            "link-stat": "https://jimag.webflow.io/?tab=Culture",
-            "culture": True,
-            "date-publish": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-            "editor-s-picks": False,
-            "fashion": False,
-            "luxury": False,
-            "stat-select": "Fashion",
-            "post-body": paraphrased_output,
-            "main-image": {
-                "url": img_url,
-                "alt": "Image Illustration"
+    valid_slug = sanitize_slug(title)
+
+    def create_new_article():
+        new_article = {
+            "fieldData": {
+                "name": title,
+                "slug": valid_slug,
+                "trending": True,
+                "link-stat": "https://jimag.webflow.io/?tab=Culture",
+                "culture": True,
+                "date-publish": datetime.now().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                "editor-s-picks": False,
+                "fashion": False,
+                "luxury": False,
+                "stat-select": "Fashion",
+                "post-body": paraphrased_output,
+                "main-image": {
+                    "url": img_url,
+                    "alt": "Image Illustration"
+                },
+                "tags": ["6553e71600ad68934cb80cd6"] 
             },
-            "tags": ["6553e71600ad68934cb80cd6"] 
-        },
-        "isDraft": False
-    }
+            "isDraft": False
+        }
+        return new_article
 
-    return new_article
+    def add_article_to_webflow(article):
+        headers = {
+            "accept": "application/json",
+            "content-type": "application/json",
+            "authorization": f"Bearer {WEBFLOW_API_KEY}"
+        }
 
-def add_article_to_webflow(article):
-    headers = {
-        "accept": "application/json",
-        "content-type": "application/json",
-        "authorization": f"Bearer {WEBFLOW_API_KEY}"
-    }
+        response = requests.post(WEBFLOW_API_URL, json=article, headers=headers)
 
-    response = requests.post(WEBFLOW_API_URL, json=article, headers=headers)
+        if response.status_code in [200, 201]:
+            print("Article added successfully!")
+            print(json.dumps(response.json(), indent=2))
+        else:
+            print(f"Failed to add article. Status code: {response.status_code}")
+            print(response.text)
 
-    if response.status_code in [200, 201]:
-        print("Article added successfully!")
-        print(json.dumps(response.json(), indent=2))
-    else:
-        print(f"Failed to add article. Status code: {response.status_code}")
-        print(response.text)
-
-# Create and add the new article
-print('Uploading to Webflow ...')
-new_article = create_new_article()
-add_article_to_webflow(new_article)
-
-
+    # Create and add the new article
+    print('Uploading to Webflow ...')
+    new_article = create_new_article()
+    add_article_to_webflow(new_article)
