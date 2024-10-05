@@ -123,25 +123,15 @@ def parse():
     # Get new URLs from the homepage
     new_urls = get_new_urls()
     
-    # Prepare a list to store new articles
-    new_articles = []
-    
     # Compare and scrape new URLs
     for url in new_urls:
         if url not in scraped_urls:
             title, img_url, text = scrape_article(url)
             if title and img_url and text:
-                new_articles.append({
-                    "url": url,
-                    "title": title,
-                    "img_url": img_url,
-                    "text": text
-                })
                 scraped_urls.append(url)  # Add new URL to the list
+                yield text, img_url, title  # Yield the values instead of appending to a list
 
     # Save updated list of scraped URLs
     save_scraped_urls(scraped_urls)
-    
-    # Return the new articles
-    return new_articles
+
 
