@@ -9,9 +9,7 @@ from datetime import datetime, timedelta
 import os
 import re
 from dotenv import load_dotenv
-from PIL import Image
-import requests
-from io import BytesIO
+
 
 load_dotenv()
 
@@ -224,20 +222,6 @@ def create_new_article():
 
     return new_article
 
-def resize_image(image_url):
-    response = requests.get(image_url)
-    img = Image.open(BytesIO(response.content))
-
-    # Resize the image to a reasonable resolution (e.g., 1920x1080)
-    img_resized = img.resize((1920, int(1920 * img.height / img.width)))
-
-    # Save the resized image to a temporary file
-    resized_image_path = 'resized_image.jpg'
-    img_resized.save(resized_image_path, format='JPEG', optimize=True, quality=85)
-
-    return resized_image_path  # Return the path of the resized image
-
-
 def add_article_to_webflow(article):
     headers = {
         "accept": "application/json",
@@ -260,26 +244,15 @@ for result in results:
     print('processing....')
     text, img_url, title = result
     images = img_url[1:] if len(img_url) > 1 else [img_url[0]]
-
-    # Resize the main image (img_url[0])
-    resized_image_path = img_url[0]
-    img_url  = resize_image(resized_image_path)  # Call resize_image function here
-    print('image resized .....',img_url)
+    img_url = img_url[0]
     detected_language = detect(text)
     print(f"Detected language: {detected_language}")
-
     paraphrased_title = paraphrase_text(title).replace("paraphrasedoutput:", "")
     paraphrased_output = pre_process_text(text, detected_language)
     formatted_html = process_text(paraphrased_output, images)
     valid_slug = sanitize_slug(paraphrased_title)
-
     print('Uploading to Webflow Next Url Data...')
     new_article = create_new_article()
-
-    # Use resized_image_path for uploading the main image to Webflow
-    #new_article['main-image'] = resized_image_path  # Ensure to upload this resized image to Webflow
-
     add_article_to_webflow(new_article)
     time.sleep(5)
-
 print('Process Completed')
