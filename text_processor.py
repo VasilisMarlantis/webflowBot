@@ -262,8 +262,8 @@ for result in results:
     images = img_url[1:] if len(img_url) > 1 else [img_url[0]]
 
     # Resize the main image (img_url[0])
-    img_url = img_url[0]
-    resized_image_path = resize_image(img_url)  # Call resize_image function here
+    resized_image_path = img_url[0]
+    img_url  = resize_image(resized_image_path)  # Call resize_image function here
 
     detected_language = detect(text)
     print(f"Detected language: {detected_language}")
@@ -277,7 +277,7 @@ for result in results:
     new_article = create_new_article()
 
     # Use resized_image_path for uploading the main image to Webflow
-    new_article['main-image'] = resized_image_path  # Ensure to upload this resized image to Webflow
+    #new_article['main-image'] = resized_image_path  # Ensure to upload this resized image to Webflow
 
     add_article_to_webflow(new_article)
     time.sleep(5)
