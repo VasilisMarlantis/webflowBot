@@ -264,7 +264,7 @@ for result in results:
     # Resize the main image (img_url[0])
     resized_image_path = img_url[0]
     img_url  = resize_image(resized_image_path)  # Call resize_image function here
-
+    print('image resized .....',img_url)
     detected_language = detect(text)
     print(f"Detected language: {detected_language}")
 
