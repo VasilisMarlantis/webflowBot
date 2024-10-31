@@ -215,7 +215,8 @@ def create_new_article():
                 "url": img_url,
                 "alt": "Image Illustration"
             },
-            "tags": ["6553e71600ad68934cb80cd6"] 
+            "tags": ["6553e71600ad68934cb80cd6"] ,
+            "order":0,
         },
         "isDraft": False
     }
