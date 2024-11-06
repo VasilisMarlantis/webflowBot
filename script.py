@@ -111,7 +111,7 @@ def parse_urls():
     tree = html.fromstring(response.content)
 
     # Get today's date
-    today = datetime.now().strftime("%B %d, %Y")  # Example: "October 19, 2024"
+    today = datetime.now().strftime("%B %d, %Y").replace(" 0", " ")
 
     # Define the filename
     filename = 'urls_data.json'
