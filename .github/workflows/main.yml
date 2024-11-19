@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 6-20/6 * * *'   # Runs every day 6 times
+    - cron: '0 6-18/4 * * *'   # Runs every day 6 times
 
 jobs:
   run-text-processor:
