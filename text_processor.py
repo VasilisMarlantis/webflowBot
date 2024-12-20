@@ -50,7 +50,7 @@ def paraphrase_text(text, retries=3):
     payload = {
         "inputs": text,
         "parameters": {
-            "max_length": 250  # Control the length of the generated text
+            "max_length": 150  # Control the length of the generated text
         },
         "options": {"wait_for_model": True}
     }
