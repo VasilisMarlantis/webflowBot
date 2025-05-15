@@ -54,7 +54,6 @@ def parse(url):
     # Send the request
     try:
         response = requests.get(url, headers=headers)
-        print('=========>',response.text)
         # Print status code
         print(f"Status Code: {response.status_code}")
         
@@ -64,7 +63,7 @@ def parse(url):
         # Get title
         title = tree.xpath("//h1[@class='entry-title']/text()")
         title = title[0] if title else None  # Get first element or None
-        
+        print('====TITLE =====>',title)
         # Get img url
         #get img url
         img_urls = tree.xpath("//div[@class='featured-media']/img/@src | //img[contains(@class, 'wp-image')]/@src")
@@ -76,7 +75,7 @@ def parse(url):
         
         # Get all <p> tags
         paragraphs = tree.xpath('//p/text()')
-        
+        print('===PARAGRAPHE ======>',paragraphs)
         # Identify the target text
         target_text = "© 2024 Dao Insights"
         
