@@ -185,15 +185,21 @@ WEBFLOW_API_URL = f"https://api.webflow.com/v2/collections/{COLLECTION_ID}/items
 
 
 # Parsing slug from title
+
 def sanitize_slug(slug):
+    # Ensure slug is a string and not None
+    if not isinstance(slug, str) or slug.strip() == "":
+        return "default-slug"
+    
     # Replace invalid characters with hyphens
     sanitized_slug = re.sub(r'[^a-zA-Z0-9-_]', '-', slug).strip('-')
     
     # Ensure the slug starts with a valid character (letter or number)
     if not re.match(r'^[a-zA-Z0-9]', sanitized_slug):
         sanitized_slug = 'a' + sanitized_slug  # Prefix with 'a' if invalid start
-    
+
     return sanitized_slug
+
 
 
 def create_new_article():
