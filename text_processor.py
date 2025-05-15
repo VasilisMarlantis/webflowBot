@@ -248,7 +248,8 @@ for result in results:
     img_url = img_url[0]
     detected_language = detect(text)
     print(f"Detected language: {detected_language}")
-    paraphrased_title = paraphrase_text(title).replace("paraphrasedoutput:", "")
+    paraphrased_title = paraphrase_text(title)
+    paraphrased_title = paraphrased_title.replace("paraphrasedoutput:", "") if paraphrased_title and "paraphrasedoutput:" in paraphrased_title else paraphrased_title
     paraphrased_output = pre_process_text(text, detected_language)
     formatted_html = process_text(paraphrased_output, images)
     valid_slug = sanitize_slug(paraphrased_title)
