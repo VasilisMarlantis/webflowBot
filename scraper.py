@@ -85,6 +85,7 @@ def scrape_article(url):
     
     try:
         response = requests.get(url, headers=headers)
+        print('-------------->',response.text)
         print(f"Scraping {url}, Status Code: {response.status_code}")
         
         tree = html.fromstring(response.content)
