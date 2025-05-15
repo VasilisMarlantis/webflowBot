@@ -54,7 +54,7 @@ def parse(url):
     # Send the request
     try:
         response = requests.get(url, headers=headers)
-        
+        print('=========>',response.text)
         # Print status code
         print(f"Status Code: {response.status_code}")
         
