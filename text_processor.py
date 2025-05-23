@@ -66,7 +66,7 @@ def paraphrase_text(text, retries=3):
                 else:
                     return "No 'generated_text' found in response."
             else:
-                print(f"Error: {response.status_code}")
+                print(f"Error: {response.status_code}",response)
         except Exception as e:
             print(f"Error during paraphrasing: {e}")
 
