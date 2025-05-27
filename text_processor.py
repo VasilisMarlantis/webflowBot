@@ -48,7 +48,7 @@ def translate_to_english(text, source_lang):
 def paraphrase_text(text, retries=3):
     # Payload to be sent to the paraphrasing API
     payload = {
-        "inputs": """ The Chengdu International Intangible Cultural Heritage Festival is a major cultural event that celebrates and preserves intangible traditions, while encouraging exchange between countries that have signed the UNESCO Convention for the Safeguarding of the Intangible Cultural Heritage. First held in 2007, the festival takes place every two years in Chengdu. This year’s edition will run from May 28 to June 3 at the Chengdu Intangible Cultural Heritage Park.""",
+        "inputs": text,
         "parameters": {
             "max_length": 150  # Control the length of the generated text
         },
