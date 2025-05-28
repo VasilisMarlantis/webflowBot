@@ -11,7 +11,7 @@ def rephrase_text(text):
     input_ids = tokenizer.encode("Rephrase: " + text, return_tensors="pt")
 
     # Generate rephrased text
-    output = model.generate(input_ids, max_length=100)
+    output = model.generate(input_ids, max_length=200)
 
     # Decode rephrased text
     rephrased_text = tokenizer.decode(output[0], skip_special_tokens=True)
@@ -19,7 +19,7 @@ def rephrase_text(text):
     return rephrased_text
 
 # Test the function
-text = """ Children’s Day is just around the corner on 1 June. For the special occasion, fast-food chains are, as usual, levelling up their toy game. However, in recent years, toys have increasingly been designed not so much for children but more for young adults, combining playability with practicality, putting the fun back in functionality, so to speak. The KFC x Sanrio collaboration is a prime example of this Children’s Day."""
+text = "Children’s Day is just around the corner on 1 June. For the special occasion, fast-food chains are, as usual, levelling up their toy game. However, in recent years, toys have increasingly been designed not so much for children but more for young adults, combining playability with practicality, putting the fun back in functionality, so to speak. The KFC x Sanrio collaboration is a prime example of this Children’s Day."
 rephrased_text = rephrase_text(text)
 
-print("Rephrased text:", rephrased_text)
+print(rephrased_text)
