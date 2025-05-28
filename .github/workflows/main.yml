@@ -46,7 +46,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-name: t5localmodel.py
+name: Run t5localmodel.py
 
 on:
   push:
