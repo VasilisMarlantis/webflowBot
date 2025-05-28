@@ -46,7 +46,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-name: Rephrase Text
+name: t5localmodel.py
 
 on:
   push:
