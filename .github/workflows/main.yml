@@ -72,4 +72,4 @@ jobs:
 
       - name: Run rephrase script
         run: |
-          python rephrase.py
+          python t5localmodel.py
