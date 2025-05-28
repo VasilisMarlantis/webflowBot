@@ -1,5 +1,6 @@
 name: Run t5localmodel.py
 
+
 on:
   push:
     branches:
@@ -24,4 +25,4 @@ jobs:
 
       - name: Run rephrase script
         run: |
-          python t5localmodel.py
+          python rt5localmodel.py
