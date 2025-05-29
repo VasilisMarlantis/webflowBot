@@ -1,7 +1,10 @@
 name: Run T5 Rephrase Script
 
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - 'rephrase.py'
+      - '.github/workflows/run-rephrase.yml'
 
 jobs:
   run-rephrase:
