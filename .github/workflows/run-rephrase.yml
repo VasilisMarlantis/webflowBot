@@ -1,0 +1,32 @@
+name: Run T5 Rephrase Script
+
+on:
+  push:
+    paths:
+      - 'rephrase.py'
+      - '.github/workflows/run-rephrase.yml'
+
+jobs:
+  run-rephrase:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install sentencepiece first
+        run: |
+          pip install --upgrade pip
+          pip install sentencepiece
+
+      - name: Install transformers and torch
+        run: |
+          pip install torch transformers
+
+      - name: Run rephrase.py
+        run: python rephrase.py
