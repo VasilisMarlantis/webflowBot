@@ -1,28 +1,29 @@
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 
+# Load model and tokenizer
 model_name = "t5-small"
 tokenizer = T5Tokenizer.from_pretrained(model_name)
 model = T5ForConditionalGeneration.from_pretrained(model_name)
 
-# ✅ Text to rephrase
+# Text to rephrase
 text = "Rephrase this sentence for clarity."
 
-# ✅ Format input properly (no manual </s>)
+# Prepare input
 input_text = f"paraphrase: {text}"
 input_ids = tokenizer.encode(input_text, return_tensors="pt", max_length=512, truncation=True)
 
-# ✅ Generate output
+# Generate output
 outputs = model.generate(
-    input_ids,
-    max_length=128,
+    input_ids=input_ids,
+    max_length=64,
     num_beams=5,
     early_stopping=True,
-    num_return_sequences=1,
+    no_repeat_ngram_size=2
 )
 
-# ✅ Decode properly
+# Decode output
 rephrased = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-print("Original: ", text)
+# Print
+print("Original:", text)
 print("Rephrased:", rephrased)
-
