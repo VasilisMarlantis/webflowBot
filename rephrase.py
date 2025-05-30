@@ -6,7 +6,7 @@ tokenizer = T5Tokenizer.from_pretrained(model_name)
 model = T5ForConditionalGeneration.from_pretrained(model_name)
 
 text = "Rephrase this sentence for clarity."
-input_text = f"paraphrase: {text} </s>"
+input_text = f"paraphrase: {text}"
 
 input_ids = tokenizer.encode(input_text, return_tensors="pt", max_length=512, truncation=True)
 
