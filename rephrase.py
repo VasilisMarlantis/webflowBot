@@ -24,3 +24,5 @@ rephrased = tokenizer.decode(outputs[0], skip_special_tokens=True)
 # Print correctly
 print("Original:", text)
 print("Rephrased:", rephrased)
+print("DEBUG TYPE:", type(rephrased), "VALUE:", repr(rephrased))
+
