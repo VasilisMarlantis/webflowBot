@@ -5,24 +5,22 @@ tokenizer = T5Tokenizer.from_pretrained(model_name)
 model = T5ForConditionalGeneration.from_pretrained(model_name)
 
 text = "Rephrase this sentence for clarity."
+input_text = f"paraphrase: {text} </s>"
 
-# Prefix with paraphrase task
-input_text = f"paraphrase: {text}"
 input_ids = tokenizer.encode(input_text, return_tensors="pt", max_length=512, truncation=True)
 
-# Generate output
 outputs = model.generate(
     input_ids=input_ids,
     max_length=64,
-    num_beams=5,
-    early_stopping=True
+    do_sample=True,
+    top_k=50,
+    top_p=0.95,
+    temperature=0.9,
+    num_return_sequences=1
 )
 
-# Decode result
 rephrased = tokenizer.decode(outputs[0], skip_special_tokens=True)
 
-# Print correctly
 print("Original:", text)
 print("Rephrased:", rephrased)
 print("DEBUG TYPE:", type(rephrased), "VALUE:", repr(rephrased))
-
