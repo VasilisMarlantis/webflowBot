@@ -1,6 +1,7 @@
-from transformers import T5Tokenizer, T5ForConditionalGeneration
+from transformers import T5ForConditionalGeneration, T5Tokenizer
 
-model_name = "t5-small"
+model_name = "ramsrigouthamg/t5_paraphraser"
+
 tokenizer = T5Tokenizer.from_pretrained(model_name)
 model = T5ForConditionalGeneration.from_pretrained(model_name)
 
@@ -13,9 +14,9 @@ outputs = model.generate(
     input_ids=input_ids,
     max_length=64,
     do_sample=True,
-    top_k=50,
+    top_k=120,
     top_p=0.95,
-    temperature=0.9,
+    temperature=0.7,
     num_return_sequences=1
 )
 
