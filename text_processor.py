@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 import os
 import re
 from dotenv import load_dotenv
-
+import requests
 
 load_dotenv()
 
