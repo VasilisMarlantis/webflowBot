@@ -1,0 +1,43 @@
+name: Paraphrase Text with Parrot T5
+
+on:
+  push:
+    branches:
+      - main  # This workflow runs when changes are pushed to the 'main' branch
+  workflow_dispatch: # Allows you to manually trigger the workflow from the GitHub UI
+
+jobs:
+  paraphrase:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x' # Use any Python 3 version
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # Install necessary libraries for Hugging Face Transformers and PyTorch
+        # torch is installed with cpu version by default in GitHub Actions runners.
+        # If you need GPU support, you would need a self-hosted runner with CUDA.
+        pip install torch transformers sentencepiece accelerate
+
+    - name: Run paraphrasing script
+      run: |
+        # Replace "Your text to paraphrase here." with the actual text you want to paraphrase.
+        # For demonstration, I've put a placeholder.
+        # In a real scenario, this text might come from an environment variable,
+        # a file, or be passed dynamically.
+        python paraphrase_script.py "The rapid development of artificial intelligence is transforming various industries globally."
+
+    - name: Display paraphrased output (if applicable)
+      # This step is just to show that the script ran and produced output.
+      # The actual output will be in the previous step's logs.
+      run: |
+        echo "Check the 'Run paraphrasing script' step for the actual output."
+
