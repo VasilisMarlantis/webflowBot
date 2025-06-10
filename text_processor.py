@@ -17,7 +17,7 @@ HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
 
 # API URLs for translation and paraphrasing
 TRANSLATE_URL = "https://api-inference.huggingface.co/models/Helsinki-NLP/opus-mt-{}-en"
-PARAPHRASE_URL = "https://api-inference.huggingface.co/models/google/flan-t5-large
+PARAPHRASE_URL = "https://api-inference.huggingface.co/models/google/flan-t5-large"
 
 # The headers containing the API key
 headers = {
