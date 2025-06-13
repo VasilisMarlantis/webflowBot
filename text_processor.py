@@ -1,3 +1,4 @@
+import requests
 import time
 from langdetect import detect
 from scraper import parse
@@ -8,16 +9,16 @@ from datetime import datetime, timedelta
 import os
 import re
 from dotenv import load_dotenv
-import requests
+
 
 load_dotenv()
 
 # Your Hugging Face API key
-HUGGINGFACE_API_KEY = os.getenv("HUGGINGFACE_API_KEY")
+HUGGINGFACE_API_KEY = "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"
 
 # API URLs for translation and paraphrasing
 TRANSLATE_URL = "https://api-inference.huggingface.co/models/Helsinki-NLP/opus-mt-{}-en"
-PARAPHRASE_URL = "https://api-inference.huggingface.co/models/google/flan-t5-large"
+PARAPHRASE_URL = "https://api-inference.huggingface.co/models/ramsrigouthamg/t5-large-paraphraser-diverse-high-quality"
 
 # The headers containing the API key
 headers = {
@@ -65,7 +66,7 @@ def paraphrase_text(text, retries=3):
                 else:
                     return "No 'generated_text' found in response."
             else:
-                print(f"Error: {response.status_code}",response)
+                print(f"Error: {response.status_code}")
         except Exception as e:
             print(f"Error during paraphrasing: {e}")
 
@@ -184,21 +185,15 @@ WEBFLOW_API_URL = f"https://api.webflow.com/v2/collections/{COLLECTION_ID}/items
 
 
 # Parsing slug from title
-
 def sanitize_slug(slug):
-    # Ensure slug is a string and not None
-    if not isinstance(slug, str) or slug.strip() == "":
-        return "default-slug"
-    
     # Replace invalid characters with hyphens
     sanitized_slug = re.sub(r'[^a-zA-Z0-9-_]', '-', slug).strip('-')
     
     # Ensure the slug starts with a valid character (letter or number)
     if not re.match(r'^[a-zA-Z0-9]', sanitized_slug):
         sanitized_slug = 'a' + sanitized_slug  # Prefix with 'a' if invalid start
-
+    
     return sanitized_slug
-
 
 
 def create_new_article():
@@ -253,8 +248,7 @@ for result in results:
     img_url = img_url[0]
     detected_language = detect(text)
     print(f"Detected language: {detected_language}")
-    paraphrased_title = paraphrase_text(title)
-    paraphrased_title = paraphrased_title.replace("paraphrasedoutput:", "") if paraphrased_title and "paraphrasedoutput:" in paraphrased_title else paraphrased_title
+    paraphrased_title = paraphrase_text(title).replace("paraphrasedoutput:", "")
     paraphrased_output = pre_process_text(text, detected_language)
     formatted_html = process_text(paraphrased_output, images)
     valid_slug = sanitize_slug(paraphrased_title)
