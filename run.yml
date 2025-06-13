@@ -1,0 +1,28 @@
+name: Run Paraphraser
+
+on: [push, workflow_dispatch]
+
+jobs:
+  paraphrase:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential
+        pip install llama-cpp-python huggingface-hub
+
+    - name: Run with HF Token
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}  # This injects the secret
+      run: |
+        python rephrase.py
