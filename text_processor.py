@@ -18,7 +18,7 @@ HUGGINGFACE_API_KEY = "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"
 
 # API URLs for translation and paraphrasing
 TRANSLATE_URL = "https://api-inference.huggingface.co/models/Helsinki-NLP/opus-mt-{}-en"
-PARAPHRASE_URL = "https://api-inference.huggingface.co/models/ramsrigouthamg/t5-large-paraphraser-diverse-high-quality"
+PARAPHRASE_URL = "https://api-inference.huggingface.co/models/google/flan-t5-base"
 
 # The headers containing the API key
 headers = {
