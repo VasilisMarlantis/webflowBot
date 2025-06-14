@@ -31,8 +31,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests python-dotenv lxml langdetect
           pip install pillow  # Explicitly install Pillow  
-          pip install transformers
-          pip install torch
+          pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
+          pip install transformers sentencepiece protobuf
+          pip install --upgrade accelerate
       # Step 4: Run text_processor.py
       - name: Run text_processor.py
         run: python text_processor.py
