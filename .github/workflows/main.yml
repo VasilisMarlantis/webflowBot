@@ -32,6 +32,7 @@ jobs:
           pip install requests python-dotenv lxml langdetect
           pip install pillow  # Explicitly install Pillow  
           pip install transformers
+          pip install torch
       # Step 4: Run text_processor.py
       - name: Run text_processor.py
         run: python text_processor.py
