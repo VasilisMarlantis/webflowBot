@@ -11,6 +11,8 @@ import re
 from dotenv import load_dotenv
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
+import warnings
+from transformers.utils import logging
 
 logging.set_verbosity_error()  # suppresses warnings
 warnings.filterwarnings("ignore")
