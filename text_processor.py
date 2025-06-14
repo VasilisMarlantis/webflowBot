@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 import torch
 
+logging.set_verbosity_error()  # suppresses warnings
+warnings.filterwarnings("ignore")
 # Load environment variables
 load_dotenv()
 
