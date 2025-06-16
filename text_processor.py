@@ -49,7 +49,7 @@ def paraphrase_text(text, retries=3):
         with torch.no_grad():
             outputs = pegasus_model.generate(
                 **inputs,
-                max_length=150,
+                max_length=250,
                 num_return_sequences=1,
                 do_sample=True,
                 temperature=0.9,
